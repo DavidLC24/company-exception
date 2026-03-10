@@ -15,34 +15,45 @@ import java.util.Map;
 public class Company {
     private String name;
     private String CIF;
-    private Map<String, Department> departments;
+    private Map<String, Department> departmentsByName;
 
     //1
     public void showDepartments(){
-        for (String allDepartments: departments.keySet()){
-            log.info(allDepartments);
+        for (Department department: departmentsByName.values()){
+            department.showInfo();
         }
     }
     //3
     public Department departmentByName (String name) throws DepartmentNotFoundException {
-        if (!departments.containsKey(name)){
+        if (!departmentsByName.containsKey(name)){
             throw new DepartmentNotFoundException("Departamento no encontrado");
         }
-        return departments.get(name);
+        return departmentsByName.get(name);
     }
 
     //2
     public List<Employee> employeesOfDepartment (String name) throws DepartmentNotFoundException{
-        Department department= departmentByName(name);
-        List<Employee> employees= List.of();
-        for (Employee employee: department.getEmployees()){
-            employees.add(employee);
+//        Department department= departmentByName(name);
+//        List<Employee> employees= List.of();
+//        for (Employee employee: department.getEmployees()){
+//            employees.add(employee);
+//        }
+//            return employees;
+        if (departmentsByName.containsKey(name)){
+            return departmentsByName.get(name).getEmployees();
         }
-            return employees;
+        throw new DepartmentNotFoundException("Departamento no encontrado"+ name);
     }
 
     //4
-//    public Employee employeeData (String nif) throws EmployeeNoFoundException {
-//        for (Department department)
-//    }
+    public Employee employeeData (String nif) throws EmployeeNoFoundException {
+        for (Department department:departmentsByName.values()){
+            for (Employee employee: department.getEmployees()){
+                if (employee.getNif().equals(nif)){
+                    return employee;
+                }
+            }
+        }
+        throw new EmployeeNoFoundException("Empleado no encontrado");
+    }
 }
